@@ -1,0 +1,13 @@
+# MANIFEST.in
+exclude .gitignore
+exclude .coverage
+include README.rst
+include setup.cfg
+prune .cache
+prune .git
+prune .idea
+prune build
+prune dist
+prune env
+recursive-exclude *.egg-info *
+recursive-include tests *
