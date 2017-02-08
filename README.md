@@ -12,7 +12,7 @@ If you do not want do install, you can run with:
 
 ### With setup.py
 * Run `python3 setup.py develop` to install a local, 'in place' copy.
-* Run `python3 setup.py develop --uninstal` to uninstall this copy.
+* Run `python3 setup.py develop --uninstall` to uninstall this copy.
 
 * Run `python3 setup.py install` to install a local immutable copy.  
 
