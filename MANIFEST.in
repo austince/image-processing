@@ -1,8 +1,11 @@
 # MANIFEST.in
 exclude .gitignore
 exclude .coverage
+exclude build-*.sh
+exclude build-submission.zip
 include README.rst
 include setup.cfg
+include requirements.txt
 prune .cache
 prune .git
 prune .idea

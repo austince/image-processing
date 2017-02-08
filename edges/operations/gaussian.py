@@ -1,7 +1,7 @@
 
 import numpy as np
 
-from edges.operations import convolve_replicate_bounds
+from edges.operations.convolution import convolve_replicate_bounds
 
 
 def build_gaussian_kernel(sigma, scale):
@@ -23,6 +23,11 @@ def build_gaussian_kernel(sigma, scale):
             power = -1 * (x_sq + y_sq) / two_sigma_sq
             kernel[x + k_len_max][y + k_len_max] = np.exp(power) * one_over_two_pi_sigma_sq
 
+    k_sum = np.sum(kernel)
+    if k_sum != 1:
+        # Normalize the gaussian filter to sum to 1
+        kernel = np.divide(kernel, k_sum)
+
     # Derivative
     # two_sigma_sq = 2 * np.power(sigma, 2)
     # for x in range(-k_len_max, k_len_max):
@@ -35,15 +40,13 @@ def build_gaussian_kernel(sigma, scale):
     #             kernel[x][y] *= x
     #         else:
     #             kernel[x][y] *= y
-    sum = np.sum(kernel)
-    if sum != 0:
-        # Normalize the gaussian filter to sum to 1
-        kernel = np.divide(kernel, sum)
-
+    # if k_sum != 0:
+    #   # Normalize the gaussian filter to sum to 0
+    #   kernel = np.divide(kernel, k_sum)
     return kernel
 
 
-def filter_image(image, sigma, scale=5):
+def filter_image(image, sigma, scale=None):
     """
     Filters in place
     :param image:
@@ -51,6 +54,10 @@ def filter_image(image, sigma, scale=5):
     :param scale:
     :return:
     """
+    if scale is None:
+        # 3 * sigma per half width
+        scale = 6 * sigma - 1
+
     kernel = build_gaussian_kernel(sigma, scale)
     # Apply both kernels to the input image
     filtered = convolve_replicate_bounds(image, kernel)

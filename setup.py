@@ -1,7 +1,6 @@
 from codecs import open
 from os.path import abspath, dirname, join
 from subprocess import call
-
 from setuptools import Command, find_packages, setup
 
 from edges import __version__
@@ -9,6 +8,9 @@ from edges import __version__
 this_dir = abspath(dirname(__file__))
 with open(join(this_dir, 'README.md'), encoding='utf-8') as file:
     long_description = file.read()
+
+with open(join(this_dir, 'requirements.txt')) as file:
+    reqs_list = file.read().splitlines()
 
 
 class RunTests(Command):
@@ -50,10 +52,11 @@ setup(
         'Programming Language :: Python :: 3.2',
         'Programming Language :: Python :: 3.3',
         'Programming Language :: Python :: 3.4',
+        'Programming Language :: Python :: 3.5',
     ],
     keywords='cli',
     packages=find_packages(exclude=['docs', 'tests*']),
-    install_requires=['numpy'],
+    install_requires=reqs_list,
     extras_require={
         'test': ['coverage', 'pytest', 'pytest-cov'],
     },
