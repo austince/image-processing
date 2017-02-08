@@ -13,8 +13,8 @@ def convolve_replicate_bounds_point(x, y, image, kernel, constant=1):
     """
     max_x = image.shape[0]
     max_y = image.shape[1]
-    k_max_x = np.floor(kernel.shape[0] / 2)
-    k_max_y = np.floor(kernel.shape[1] / 2)
+    k_max_x = int(np.floor(kernel.shape[0] / 2))
+    k_max_y = int(np.floor(kernel.shape[1] / 2))
 
     sum = 0
 
