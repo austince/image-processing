@@ -1,6 +1,6 @@
 from scipy import misc
-from termcolor import colored
-from edges.operations import gaussian, sobel, suppression
+from termcolor import cprint
+from detection.operations import gaussian, sobel, suppression
 
 
 def detect(image, g_sig=1, threshold=100):
@@ -16,6 +16,6 @@ def detect(image, g_sig=1, threshold=100):
     :return:
     """
 
-    filtered = gaussian.filter_image(image, g_sig)
+    filtered = gaussian.filter(image, g_sig)
     filtered = suppression.non_max_suppress(filtered, threshold)
     return filtered

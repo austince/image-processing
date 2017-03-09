@@ -1,5 +1,5 @@
 import numpy as np
-from edges.operations.sobel import gradient, gradient_magnitude, gradient_direction
+from detection.operations.sobel import gradient, gradient_magnitude, gradient_direction
 
 
 def threshold_point(x, y, image, original, threshold):

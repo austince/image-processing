@@ -1,5 +1,5 @@
 import numpy as np
-from edges.operations.convolution import convolve_replicate_bounds, convolve_replicate_bounds_point
+from detection.operations.convolution import convolve_replicate_bounds, convolve_replicate_bounds_point
 
 SOBEL_X = np.array([
     [-1, 0, 1],

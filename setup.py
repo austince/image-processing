@@ -3,7 +3,7 @@ from os.path import abspath, dirname, join
 from subprocess import call
 from setuptools import Command, find_packages, setup
 
-from edges import __version__
+from detection import __version__
 
 this_dir = abspath(dirname(__file__))
 with open(join(this_dir, 'README.md'), encoding='utf-8') as file:
@@ -27,14 +27,14 @@ class RunTests(Command):
     def run(self):
         """Run all tests!"""
         errno = call(['py.test',
-                      '--cov=edges',
+                      '--cov=detection',
                       '--cov-report=term-missing',
                       '--ignore=env'])
         raise SystemExit(errno)
 
 
 setup(
-    name='edges',
+    name='detection',
     version=__version__,
     description='basic image processing / edge detection for cs 558',
     long_description=long_description,
@@ -62,7 +62,7 @@ setup(
     },
     entry_points={
         'console_scripts': [
-            'edges=edges.cli:main',
+            'detection=detection.cli:main',
         ],
     },
     cmdclass={'test': RunTests},

@@ -1,7 +1,7 @@
 
 import numpy as np
 
-from edges.operations.convolution import convolve_replicate_bounds
+from detection.operations.convolution import convolve_replicate_bounds
 
 
 def build_gaussian_kernel(sigma, scale):
@@ -46,7 +46,7 @@ def build_gaussian_kernel(sigma, scale):
     return kernel
 
 
-def filter_image(image, sigma, scale=None):
+def filter(image, sigma, scale=None):
     """
     Filters in place
     :param image:

@@ -1,4 +1,4 @@
-# Edges
+# Detection
 
 A basic edge detection implementation in __Python3__.
 
