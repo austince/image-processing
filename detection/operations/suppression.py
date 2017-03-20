@@ -85,8 +85,7 @@ def non_max_suppress_point(x, y, image, original):
         # Already removed
         return
 
-    max_x = image.shape[0]
-    max_y = image.shape[1]
+    max_x, max_y = image.shape
 
     # Take gradient from original, NOT IMAGE BEING SUPPRESSED
     grad = gradient(x, y, original)

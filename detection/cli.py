@@ -34,21 +34,21 @@ def main():
 
     try:
         cprint('Processing file: ' + str(args.input), 'green')
-        image = misc.imread(args.input)
+        image = misc.imread(args.input, flatten=True)
 
         cprint('Starting ' + args.operation + '!', 'green')
 
         if args.operation == 'gaussian':
-            processed = gaussian.filter(image, args.gaussian_sigma)
+            processed = gaussian.filter_image(image, args.gaussian_sigma)
         elif args.operation == 'gradient-magnitude' or args.operation == 'grad-mag':
-            processed = gaussian.filter(image, args.gaussian_sigma)
+            processed = gaussian.filter_image(image, args.gaussian_sigma)
             processed = threshold_image(processed, args.threshold)
         elif args.operation == 'edges':
             processed = edges.detect(image, args.gaussian_sigma, args.threshold)
         elif args.operation == 'ransac':
             processed = ransac.detect(image)
         elif args.operation == 'hessian':
-            processed = hessian.detect(image)
+            processed = hessian.detect(image, gaus_sig=args.gaussian_sigma)
         elif args.operation == 'hough-transform' or args.operation == 'hough':
             processed = hough.detect(image)
 
@@ -56,7 +56,7 @@ def main():
         cprint("Can't load image file: " + str(args.input), 'red')
         sys.exit(1)
     except Exception as ex:
-        # raise ex  # For Development
+        raise ex  # For Development
         cprint('Error processing ' + args.input + ": " + str(ex), 'red')
         sys.exit(1)
 
@@ -73,7 +73,7 @@ def main():
         input_dir, input_filename = os.path.split(args.input)
         out_path = './' + args.operation + '.' + input_filename
 
-    # plt.imshow(processed)
+    # misc.imshow(processed)
     misc.imsave(out_path, processed)
 
 

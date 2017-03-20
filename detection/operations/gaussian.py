@@ -46,7 +46,7 @@ def build_gaussian_kernel(sigma, scale):
     return kernel
 
 
-def filter(image, sigma, scale=None):
+def filter_image(image, sigma, scale=None):
     """
     Filters in place
     :param image:

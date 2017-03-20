@@ -44,6 +44,8 @@ setup(
     license='UNLICENSE',
     classifiers=[
         'Intended Audience :: Developers',
+        'Intended Audience :: End Users/Desktop',
+        'Intended Audience :: Other Audience',
         'Topic :: Utilities',
         'License :: Public Domain',
         'Natural Language :: English',

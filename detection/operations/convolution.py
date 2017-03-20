@@ -11,12 +11,12 @@ def convolve_replicate_bounds_point(x, y, image, kernel, constant=1):
     :param constant:
     :return:
     """
-    max_x = image.shape[0]
-    max_y = image.shape[1]
-    k_max_x = int(np.floor(kernel.shape[0] / 2))
-    k_max_y = int(np.floor(kernel.shape[1] / 2))
+    max_x, max_y = image.shape
+    k_max_x, k_max_y = kernel.shape
+    k_max_x = int(k_max_x / 2)
+    k_max_y = int(k_max_y / 2)
 
-    sum = 0
+    convolve_sum = np.int64(0)
 
     for k_x in range(-k_max_x, k_max_x + 1):
         for k_y in range(-k_max_y, k_max_y + 1):
@@ -33,9 +33,10 @@ def convolve_replicate_bounds_point(x, y, image, kernel, constant=1):
             elif adj_y >= max_y:
                 adj_y = max_y - 1
 
-            sum += kernel[k_x + k_max_x][k_y + k_max_y] * image[adj_x][adj_y]
+            iter_sum = kernel[k_x + k_max_x][k_y + k_max_y] * image[adj_x][adj_y]
+            convolve_sum += iter_sum
 
-    return sum * constant
+    return convolve_sum * constant
 
 
 def convolve_replicate_bounds(image, kernel, constant=1):
