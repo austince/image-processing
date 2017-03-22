@@ -1,4 +1,3 @@
-from enum import Enum
 from termcolor import cprint
 import numpy as np
 from scipy import misc
@@ -8,21 +7,36 @@ from detection.operations import sobel
 
 
 def max_in_vicinity(x, y, arr, vicinity):
+    """
+    
+    :param x: 
+    :param y: 
+    :param arr: 
+    :param vicinity: 
+    :return: 
+    """
     max_val = arr[x][y]
     max_x, max_y = arr.shape
     v_len = int(vicinity / 2)
-    for arr_x in range(x - v_len, x + v_len + 1):
-        for arr_y in range(y - v_len, y + v_len + 1):
-            if arr_x < 0:
-                arr_x = 0
-            elif arr_x >= max_x:
-                arr_x = max_x - 1
 
-            if arr_y < 0:
-                arr_y = 0
-            elif arr_y >= max_y:
-                arr_y = max_y - 1
+    min_x_range = x - v_len
+    if min_x_range < 0:
+        min_x_range = 0
 
+    max_x_range = x + v_len + 1
+    if max_x_range >= max_x:
+        max_x_range = max_x - 1
+
+    min_y_range = y - v_len
+    if min_y_range < 0:
+        min_y_range = 0
+
+    max_y_range = y + v_len + 1
+    if max_y_range >= max_y:
+        max_y_range = max_y - 1
+
+    for arr_x in range(min_x_range, max_x_range):
+        for arr_y in range(min_y_range, max_y_range):
             max_val = max(arr[arr_x][arr_y], max_val)
 
     return max_val
@@ -34,13 +48,14 @@ def hessian_suppress(image, determinates, vicinity):
 
     for x in range(0, max_x):
         for y in range(0, max_y):
-            if determinates[x][y] >= max_in_vicinity(x, y, determinates, vicinity):
+            if determinates[x][y] >= max_in_vicinity(x, y, determinates, vicinity) \
+                    and determinates[x][y] != 0:
                 image[x][y] = 1
             else:
                 image[x][y] = 0
 
 
-def detect(image, threshold=-15000, gaus_sig=3, vicinity=3):
+def detect(image, threshold=1000, gaus_sig=1, vicinity=3):
     """
     Apply Gaussian Filter first
     Use Sobel filters as derivative operators
@@ -67,11 +82,13 @@ def detect(image, threshold=-15000, gaus_sig=3, vicinity=3):
     iy_filtered = sobel.filter_image(image, kernel=sobel.SOBEL_X)
     cprint('Finding Second derivatives', 'yellow')
     ixx_filtered = sobel.filter_image(ix_filtered, kernel=sobel.SOBEL_Y)
-    ixy_filtered = sobel.filter_image(ix_filtered, kernel=sobel.SOBEL_Y)
+    ixy_filtered = sobel.filter_image(ix_filtered, kernel=sobel.SOBEL_X)
     iyy_filtered = sobel.filter_image(iy_filtered, kernel=sobel.SOBEL_X)
 
     cprint('Finding determinants', 'yellow')
+    # ixx * iyy - ixy ^ 2
     determinants = ixx_filtered * iyy_filtered - (ixy_filtered ** 2)
+    # assert determinants == np.linalg.det()
 
     cprint('Thresholding determinants', 'yellow')
     max_x, max_y = determinants.shape
@@ -84,8 +101,14 @@ def detect(image, threshold=-15000, gaus_sig=3, vicinity=3):
     cprint('Non-max suppressing', 'yellow')
     hessian_suppress(image, determinants, vicinity)
 
-    # for x in range(0, max_x):
-    #     for y in range(0, max_y):
-    #         pass
+    features = []
+    for x in range(0, max_x):
+        for y in range(0, max_y):
+            if image[x][y] == 1:
+                features.append((x, y))
 
-    return image
+    # Also return a list of x,y points that are the 'features'
+
+    return image, features
+
+

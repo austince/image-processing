@@ -71,6 +71,7 @@ def main():
         out_path = args.output
     else:
         input_dir, input_filename = os.path.split(args.input)
+        # default to the format [operation].[original filename].[original extension]
         out_path = './' + args.operation + '.' + input_filename
 
     # misc.imshow(processed)
