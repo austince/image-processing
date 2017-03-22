@@ -10,7 +10,7 @@ def detect(image, g_sig=1, threshold=100):
     1. Gaussian filter
     2. Gradient computation using Sobel filters
     3. Non-maximum suppression
-    :param image_path:
+    :param image:
     :param g_sig: gaussian sigma
     :param threshold:
     :return:

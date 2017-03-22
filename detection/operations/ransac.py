@@ -1,15 +1,15 @@
 from termcolor import cprint
 import numpy as np
-from skimage.draw import line_aa
 
 from detection.operations.hessian import detect as feature_detect
-from detection.utils import subsample
+from detection.utils import subsample, plot_line, plot_square, most_extreme_points
 from detection.operations import gaussian
 
 
 def fitline(points):
     p1 = points[0]
     p2 = points[1]
+    # mx + b = y
     # m = (p2[1] - p1[1]) / (p2[0] - p1[0])
     # b = p1[1] - m * p1[0]
 
@@ -32,7 +32,7 @@ def find_inliers(model, threshold, features):
     return inliers
 
 
-def plot_inlier_lines(lines, image):
+def plot_inlier_lines(lines, image, max_to_plot=4, inlier_sq_size=3):
     """
     Find two extreme points in the line and plot a connecting segment in the image
     :param lines: 
@@ -41,18 +41,17 @@ def plot_inlier_lines(lines, image):
     :return: 
     """
 
-    plot_line(lines[0], image)
+    # Find the lines with the best support
+    # More inliers is more support?
+    lines.sort(key=len, reverse=True)
 
+    for line_index in range(max_to_plot):
+        for point in lines[line_index]:
+            plot_square(point, inlier_sq_size, image)
 
-def plot_line(line, image):
-    """
-    Draws a line onto an image
-    :param line: 
-    :param image: 
-    :return: 
-    """
-    rr, cc, val = line_aa(line[0][0], line[0][1], line[1][0], line[1][1])
-    image[rr, cc] = val * 255
+        start, end = most_extreme_points(lines[line_index])
+        if start is not None and end is not None:
+            plot_line(start, end, image)
 
 
 def detect(image, subsample_size=2, num_runs=100, gaus_sig=1):
@@ -69,9 +68,14 @@ def detect(image, subsample_size=2, num_runs=100, gaus_sig=1):
     # Fit a model to that subset
     # Find all remaining points that are 'close' to the model
     # If there are more than a certain number of inliers
-    #   Refit using all the new inliers TODO
+    #   Refit using all the new inliers
     # Reject the rest as outliers
     # Repeat and choose the best model
+
+    # Notes
+    # could run iteratively and only pull top contender each time, then remove
+    # Todo: accurate calculation of line distance
+
 
     threshold = np.sqrt(3.84 * gaus_sig ** 2)
 

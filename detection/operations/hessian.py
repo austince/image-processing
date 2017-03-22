@@ -2,65 +2,40 @@ from termcolor import cprint
 import numpy as np
 from scipy import misc
 
+from detection.utils import max_in_vicinity
 from detection.operations import gaussian
 from detection.operations import sobel
 
 
-def max_in_vicinity(x, y, arr, vicinity):
+def hessian_suppress(image, determinants, vicinity):
     """
     
-    :param x: 
-    :param y: 
-    :param arr: 
+    :param image: 
+    :param determinants: 
     :param vicinity: 
     :return: 
     """
-    max_val = arr[x][y]
-    max_x, max_y = arr.shape
-    v_len = int(vicinity / 2)
-
-    min_x_range = x - v_len
-    if min_x_range < 0:
-        min_x_range = 0
-
-    max_x_range = x + v_len + 1
-    if max_x_range >= max_x:
-        max_x_range = max_x - 1
-
-    min_y_range = y - v_len
-    if min_y_range < 0:
-        min_y_range = 0
-
-    max_y_range = y + v_len + 1
-    if max_y_range >= max_y:
-        max_y_range = max_y - 1
-
-    for arr_x in range(min_x_range, max_x_range):
-        for arr_y in range(min_y_range, max_y_range):
-            max_val = max(arr[arr_x][arr_y], max_val)
-
-    return max_val
-
-
-def hessian_suppress(image, determinates, vicinity):
 
     max_x, max_y = image.shape
+    # v_len = int(vicinity / 2)
+    # for x in range(v_len, max_x - v_len):
+    #     for y in range(v_len, max_y - v_len):
 
     for x in range(0, max_x):
         for y in range(0, max_y):
-            if determinates[x][y] >= max_in_vicinity(x, y, determinates, vicinity) \
-                    and determinates[x][y] != 0:
+            if determinants[x][y] >= max_in_vicinity(x, y, determinants, vicinity) \
+                    and determinants[x][y] != 0:
                 image[x][y] = 1
             else:
                 image[x][y] = 0
 
 
-def detect(image, threshold=1000, gaus_sig=1, vicinity=3):
+def detect(image, threshold=5000, gaus_sig=1, vicinity=3):
     """
     Apply Gaussian Filter first
     Use Sobel filters as derivative operators
     Threshold the determinant of the Hessian
-    Apply non-maximum suppression in 3 x 3 neighborhoods
+    Apply non-maximum suppression in 3 x 3 neighborhoods / vicinity
     
     Hessian(I) = [ Ixx Ixy] 
                  [Ixy Iyy] 
@@ -73,7 +48,7 @@ def detect(image, threshold=1000, gaus_sig=1, vicinity=3):
     """
 
     # Make a copy so we don't lose the original
-    cprint('First appying Gaussian', 'yellow')
+    cprint('Applying Gaussian', 'yellow')
     gaussian.filter_image(image, gaus_sig)
 
     cprint('Finding First derivatives', 'yellow')
