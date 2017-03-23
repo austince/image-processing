@@ -1,3 +1,5 @@
+""" Canny Edge Detection
+"""
 from scipy import misc
 from termcolor import cprint
 from detection.operations import gaussian, sobel, suppression

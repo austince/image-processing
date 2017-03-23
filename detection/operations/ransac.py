@@ -5,9 +5,7 @@ import numpy as np
 from scipy import stats
 
 from detection.operations.hessian import detect as feature_detect
-from detection.utils import subsample, plot_line, plot_square, most_extreme_points
-from detection.utils import distance_between_points
-from detection.operations import gaussian
+from detection.operations.utils import subsample, plot_line, plot_square, most_extreme_points
 
 
 def distance_to_model(a, b, c, point):
@@ -16,27 +14,40 @@ def distance_to_model(a, b, c, point):
     return numer / denom
 
 
-def linReg(points):
-    """
+def fitline_many_points(points):
+    """ More robust line fitting for many points
     
     :param points: 
-    :return: 
+    :return: m, b tuple
     """
+    # Split into xs and ys
     xs = np.matrix([[x, 1] for (x, _) in points])
     ys = np.matrix([[y] for (_, y) in points])
 
-    bs = np.linalg.inv(xs.transpose() * xs) * xs.transpose() * ys
+    try:
+        bs = np.linalg.inv(xs.transpose() * xs) * xs.transpose() * ys
+    except np.linalg.linalg.LinAlgError:
+        return fitline(points)
 
-    return bs[0].item(), bs[1].item()
+    m, b_inter = bs[0].item(), bs[1].item()
+
+    a = -m
+    b = 1
+    c = -b_inter
+
+    def distance_to(point):
+        return distance_to_model(a, b, c, point)
+
+    coeffs = a, b, c
+    return distance_to, coeffs
 
 
 def fitline(points):
-    """
+    """ More efficient for just two points
     
     :param points: 
     :return: 
     """
-    linReg(points)
     p1 = points[0]
     p2 = points[1]
     # mx + b = y
@@ -98,12 +109,15 @@ def plot_inlier_lines(lines, image, max_to_plot=4, inlier_sq_size=3):
             plot_line(start, end, image)
 
 
-def detect(image, subsample_size=2, gaus_sig=1):
+def detect(image, subsample_size=2, num_best=4, min_inliers=4, inlier_threshold=None, feature_threshold=None, gaus_sig=1):
     """
     
     :param image: 
     :param subsample_size: 
-    :param num_sample_runs: 
+    :param num_best:
+    :param min_inliers: 
+    :param inlier_threshold:
+    :param feature_threshold:
     :param gaus_sig: 
     :return: 
     """
@@ -118,43 +132,54 @@ def detect(image, subsample_size=2, gaus_sig=1):
 
     # Notes
     # could run iteratively and only pull top contender each time, then remove
-    # Also could run error regression on each model + inliers to determine best fit
-    # Todo: accurate calculation of line distance
+    # Also could run error regression on each model + inliers to determine best fit: Done!
 
-    # Where expected proportion of outliers 'e' is .5
+    # Where expected proportion of outliers 'e' is .75
     # where probability of at least one sample free of outliers 'p' is .999
-    num_sample_runs = int(np.log(.001) / np.log(1 - (.5 ** subsample_size)))
-    threshold = np.sqrt(3.84 * gaus_sig ** 2)
-    # Min number of inliers to be considered a line
-    min_acceptable_inliers = 4
+    num_sample_runs = int(np.log(.001) / np.log(1 - (.25 ** subsample_size)))
+
+    if inlier_threshold is None:
+        inlier_threshold = np.sqrt(3.84 * gaus_sig ** 2)
 
     cprint('Detecting features', 'yellow')
-    feat_img, feat_points = feature_detect(image.copy(), gaus_sig=gaus_sig)
-    subsets = []
-    inlier_lines = []
-    inlier_errors = []
+    feat_img, feat_points = feature_detect(image.copy(), threshold=feature_threshold, gaus_sig=gaus_sig)
+    best_inlier_lines = []
 
-    # Randomly choose
     cprint('Fitting models', 'yellow')
-    for run in range(num_sample_runs):
-        subset = None
-        # Make sure not to pick the same subset twice
-        # todo: not inverse-invariant
-        while subset is None or subset in subsets:
-            subset = subsample(feat_points, subsample_size)
+    for best_run in range(num_best):
+        subsets = []
+        inlier_lines = []
+        inlier_errors = []
 
-        model_distance_to, model_coeffs = fitline(subset)
-        inliers = find_inliers(model_distance_to, threshold, feat_points)
+        # Run for a sample
+        for run in range(num_sample_runs):
+            # Randomly choose
+            subset = None
+            # Make sure not to pick the same subset twice
+            # todo: not inverse-invariant
+            while subset is None or subset in subsets:
+                subset = subsample(feat_points, subsample_size)
 
-        # add to inlier_lines
-        if len(inliers) >= min_acceptable_inliers:
-            inlier_lines.append(inliers)
-            # linear regression and Error checking,
-            inlier_errors.append(total_error(model_coeffs, inliers))
+            distance_to_model, _ = fitline(subset)
+            inliers = find_inliers(distance_to_model, inlier_threshold, feat_points)
 
-    # Find the lines with the best support
-    # Sort by minimal total error
-    inlier_lines = [line for (line, err) in sorted(zip(inlier_lines, inlier_errors))]
+            # add to inlier_lines
+            if len(inliers) >= min_inliers:
+                inlier_lines.append(inliers)
+                # Refit using all inliers
+                _, model_coeffs = fitline_many_points(inliers)
+                # linear regression and Error checking,
+                inlier_errors.append(total_error(model_coeffs, inliers))
+
+        # Find the lines with the best support
+        # Sort by minimal total error
+        # inlier_lines.sort(key=len)
+        # inlier_lines = [line for (line, err) in sorted(zip(inlier_lines, inlier_errors))]
+        # Choose the best, remove it and rerun
+        if len(inlier_lines) > 0:
+            min_err_index = inlier_errors.index(min(inlier_errors))
+            best_inlier_lines.append(inlier_lines[min_err_index])
+
     cprint('Plotting lines and inliers', 'yellow')
-    plot_inlier_lines(inlier_lines, image)
+    plot_inlier_lines(best_inlier_lines, image)
     return image

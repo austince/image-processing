@@ -1,4 +1,5 @@
-
+""" Gaussian Blur filtering
+"""
 import numpy as np
 
 from detection.operations.convolution import convolve_replicate_bounds

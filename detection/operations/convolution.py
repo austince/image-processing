@@ -1,3 +1,5 @@
+""" Various functions to convolve 
+"""
 import numpy as np
 
 

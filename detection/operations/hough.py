@@ -3,7 +3,7 @@
 from termcolor import cprint
 import numpy as np
 
-from detection.utils import local_maxes_2d, plot_square, plot_line, most_extreme_points
+from detection.operations.utils import local_maxes_2d, plot_square, plot_line, most_extreme_points
 from detection.operations.hessian import detect as feature_detect
 
 
@@ -23,7 +23,7 @@ def plot_best_lines(accumulator, points_in_bins, image, max_to_plot=4, inlier_sq
             plot_line(start, end, image)
 
 
-def detect(image, gaus_sig=1):
+def detect(image, feature_threshold=None, gaus_sig=1):
     """
     
     :param image: 
@@ -37,8 +37,6 @@ def detect(image, gaus_sig=1):
     # Find bins that have the most votes
     # Parameter space will be represented using a polar format
 
-    # Todo: Keep track of which point votes for which bin, then draw line with all points
-
     max_x, max_y = image.shape
     max_theta = 180
     # rho will never be above x + y
@@ -51,7 +49,7 @@ def detect(image, gaus_sig=1):
 
     # Detect feature points with hessian
     cprint('Detecting features', 'yellow')
-    feat_img, feat_points = feature_detect(image.copy(), gaus_sig=gaus_sig)
+    feat_img, feat_points = feature_detect(image.copy(), threshold=feature_threshold, gaus_sig=gaus_sig)
 
     cprint('Accumulating votes', 'yellow')
     for point in feat_points:

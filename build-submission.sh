@@ -1,9 +1,7 @@
 #!/usr/bin/env bash
 
-# Zip the setup.py, tests, requirements, README.md, and package
-# Exclude caches, outputs, and complied files
-# Output is in results
 DIR=$(pwd)
+PKG_NAME=detection
 
 if [ $1 ]; then
 FILENAME="CAWLEY-EDWARDS_Austin_${1}.zip"
@@ -20,7 +18,11 @@ make
 mv refman.pdf ${DIR}
 
 cd ${DIR}
+
+# Zip the setup.py, tests, requirements, compiled pdfs, and package
+# Exclude caches, temp outputs, markdown, and complied python files
+# Output is in results
 zip -r ${FILENAME} \
-	setup.py requirements.txt README.md results edges \
-	-x *__pycache__* *out* *.pyc
+	setup.py requirements.txt README.md results *.pdf ${PKG_NAME} \
+	-x *__pycache__* *out* *.pyc *.md
 

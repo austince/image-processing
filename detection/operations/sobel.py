@@ -1,5 +1,10 @@
+"""
+ Sobel Gradient Filtering
+ 
+ NOTE: Have been treating x, y incorrectly with numpy this whole time
+ They should be reversed. Everywhere. Todo.
+"""
 import numpy as np
-from scipy import misc
 
 from detection.operations.convolution import convolve_replicate_bounds, convolve_replicate_bounds_point
 
@@ -11,17 +16,35 @@ SOBEL_X = np.array([
 SOBEL_Y = np.fliplr(SOBEL_X).transpose()
 
 
-def x_derivative(x, y, image):
+def point_x_derivative(x, y, image):
     return convolve_replicate_bounds_point(x, y, image, SOBEL_Y)
 
 
-def y_derivative(x, y, image):
+def point_y_derivative(x, y, image):
     return convolve_replicate_bounds_point(x, y, image, SOBEL_X)
 
 
+def x_derivative(image):
+    """
+    Image's derivative in the x direction
+    :param image: 
+    :return: 
+    """
+    return filter_image(image, SOBEL_Y)
+
+
+def y_derivative(image):
+    """
+    Image's derivative in the y direction
+    :param image: 
+    :return: 
+    """
+    return filter_image(image, SOBEL_X)
+
+
 def gradient(x, y, image):
-    dfx = x_derivative(x, y, image)
-    dfy = y_derivative(x, y, image)
+    dfx = point_x_derivative(x, y, image)
+    dfy = point_y_derivative(x, y, image)
     return np.array([dfx, dfy])
 
 
@@ -44,9 +67,9 @@ def gradient_direction(grad):
 
 def filter_area(image, area=((0, 3), (0, 3)), kernel=SOBEL_X):
     """
-    
+    Todo! Not implemented correctly yet
     :param image: ndarray
-    :param img_area: 
+    :param area: 
     :param kernel: 
     :return: 
     """

@@ -4,7 +4,7 @@ from termcolor import cprint
 import numpy as np
 from scipy import misc
 
-from detection.utils import max_in_vicinity
+from detection.operations.utils import max_in_vicinity
 from detection.operations import gaussian
 from detection.operations import sobel
 
@@ -32,7 +32,7 @@ def hessian_suppress(image, determinants, vicinity):
                 image[x][y] = 0
 
 
-def detect(image, threshold=50000, gaus_sig=1, vicinity=3):
+def detect(image, threshold=150000, gaus_sig=1, vicinity=3):
     """
     Apply Gaussian Filter first
     Use Sobel filters as derivative operators
@@ -48,6 +48,8 @@ def detect(image, threshold=50000, gaus_sig=1, vicinity=3):
     :param vicinity:
     :return: 
     """
+    if threshold is None:
+        threshold = 150000
 
     # Make a copy so we don't lose the original
     cprint('Applying Gaussian', 'yellow')
@@ -55,16 +57,16 @@ def detect(image, threshold=50000, gaus_sig=1, vicinity=3):
 
     cprint('Finding First derivatives', 'yellow')
     # Use inverse filters because everything is in y,x format lol oops
-    ix_filtered = sobel.filter_image(image, kernel=sobel.SOBEL_Y)
-    iy_filtered = sobel.filter_image(image, kernel=sobel.SOBEL_X)
+    image_ix = sobel.x_derivative(image)
+    image_iy = sobel.y_derivative(image)
     cprint('Finding Second derivatives', 'yellow')
-    ixx_filtered = sobel.filter_image(ix_filtered, kernel=sobel.SOBEL_Y)
-    ixy_filtered = sobel.filter_image(ix_filtered, kernel=sobel.SOBEL_X)
-    iyy_filtered = sobel.filter_image(iy_filtered, kernel=sobel.SOBEL_X)
+    image_ixx = sobel.x_derivative(image_ix)
+    image_ixy = sobel.y_derivative(image_ix)
+    image_iyy = sobel.y_derivative(image_iy)
 
     cprint('Finding determinants', 'yellow')
     # ixx * iyy - ixy ^ 2
-    determinants = ixx_filtered * iyy_filtered - (ixy_filtered ** 2)
+    determinants = image_ixx * image_iyy - (image_ixy ** 2)
     # assert determinants == np.linalg.det()
 
     cprint('Thresholding determinants', 'yellow')
