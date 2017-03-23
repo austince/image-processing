@@ -9,8 +9,8 @@ from tests.utils import load_image, save_result
 
 class TestThreshold(TestCase):
     def test_results_road(self):
-        thresh_start = 1000
-        thresh_end = 71000
+        thresh_start = 51000
+        thresh_end = 171000
         image = load_image(test_images_dict['road.png'])
 
         for thresh in range(thresh_start, thresh_end + 1, 10000):

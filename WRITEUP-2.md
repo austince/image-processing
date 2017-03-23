@@ -14,7 +14,6 @@ The results of this assignment use mainly the Road.
 Road  
 ![Road](./tests/images/road.png "Road")  
 
-<!--
 Kangaroo  
 ![Kangaroo](./tests/images/kangaroo.png "Kangaroo")  
   
@@ -23,7 +22,7 @@ Red
   
 Plane  
 ![Plane](./tests/images/plane.png "Plane")  
--->
+
   
 ## Hessian Feature Detection
 
@@ -128,7 +127,7 @@ or one that casts away points that are dissimilar from the rest of the line.
 **Minimum Inlier Threshold:**  
 Though there are the parallel problems, raising the number of inliers to be considered a 'line' seems 
 to help the algorithm choose only the lines that are closest together. As we get higher, we risk 
-make it so no line will be able to qualify as a good line.
+make it so no line will be able to qualify as a good line, and face missing small lines entirely as well.
 
 
 ## Hough Transform Line Detection
@@ -145,4 +144,32 @@ plot all feature points that cast a vote in the highest bins, as per Professor's
 
 ### Results
 
+Feature Threshold: 1000  
+![low threshold](./results/hough/road-t1000.png "1000 threshold")
+
+Feature threshold: 51000  
+![med threshold](./results/hough/road-t51000.png "51000 threshold")
+
+Feature threshold: 71000  
+![higher threshold](./results/hough/road-t71000.png "71000 threshold")
+
 ### Analysis
+The 51000 Threshold is an incredible example of the parallel line detection.  
+Hough Parameter space is able to caputre all points that could possible create the line,
+so almost all points of parallel lines can be captured.  
+
+When there are too many feature points, as in the 1000 Threshold image, the algorithm casts too many
+votes and the clustered points are given too much credibility.    
+
+When features are thresholded too high, the algorithm finds too many similar lines around the same edge.
+
+## Overall Remarks
+
+Hessian detecting is an easy, general purpose feature detection.  
+
+RANSAC works well when the parameters are adjusted right, but also is random, which makes results difficult
+to decipher.
+
+Hough Transform is more dependable, but falls into the parallel line trap, where edges are extended over 
+gaps where they should not be. 
+

@@ -56,7 +56,6 @@ def detect(image, threshold=125000, gaus_sig=1, vicinity=3):
     gaussian.filter_image(image, gaus_sig)
 
     cprint('Finding First derivatives', 'yellow')
-    # Use inverse filters because everything is in y,x format lol oops
     image_ix = sobel.x_derivative(image)
     image_iy = sobel.y_derivative(image)
     cprint('Finding Second derivatives', 'yellow')

@@ -110,7 +110,7 @@ def plot_inlier_lines(lines, image, max_to_plot=4, inlier_sq_size=3):
             plot_line(start, end, image)
 
 
-def detect(image, subsample_size=2, num_best=4, min_inliers=10, inlier_threshold=None, feature_threshold=None, gaus_sig=1):
+def detect(image, subsample_size=2, num_best=4, min_inliers=7, inlier_threshold=None, feature_threshold=None, gaus_sig=1):
     """
     
     :param image: 
@@ -145,6 +145,7 @@ def detect(image, subsample_size=2, num_best=4, min_inliers=10, inlier_threshold
     cprint('Detecting features', 'yellow')
     feat_img, feat_points = feature_detect(image.copy(), threshold=feature_threshold, gaus_sig=gaus_sig)
     best_inlier_lines = []
+    best_subsets = []
 
     cprint('Fitting models', 'yellow')
     for best_run in range(num_best):
@@ -158,8 +159,10 @@ def detect(image, subsample_size=2, num_best=4, min_inliers=10, inlier_threshold
             subset = None
             # Make sure not to pick the same subset twice
             # todo: not inverse-invariant
-            while subset is None or subset in subsets:
+            while subset is None or subset in subsets or subset in best_subsets:
                 subset = subsample(feat_points, subsample_size)
+
+            subsets.append(subset)
 
             distance_to_model_func, _ = fitline(subset)
             inliers = find_inliers(distance_to_model_func, inlier_threshold, feat_points)
@@ -180,6 +183,7 @@ def detect(image, subsample_size=2, num_best=4, min_inliers=10, inlier_threshold
         if len(inlier_lines) > 0:
             min_err_index = inlier_errors.index(min(inlier_errors))
             best_inlier_lines.append(inlier_lines[min_err_index])
+            best_subsets.append(subsets[min_err_index])
 
     cprint('Plotting lines and inliers', 'yellow')
     plot_inlier_lines(best_inlier_lines, image)

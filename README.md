@@ -1,4 +1,8 @@
 # Detection
+**Austin Cawley-Edwards  
+Stevens Institute of Technology  
+CS 558: Computer Vision  
+Prof. Enrique Dunn**  
 
 A basic feature and edge detection implementation in __Python3__.
 
@@ -38,9 +42,9 @@ $ detection -i [INPUT FILE] -o [OUTPUT DEST] [OPTIONS]
 * `-t [NUMBER]` : Specify a threshold for the various suppression
 * `-gs [NUMBER]` : Specify the sigma to be used for the Gaussian filter
 * `-op [OPERATION]` : Specify the operation to perform
+* Many others found in with `-h` flags
 
 ## Documentation
-Look for a doxygen-generated pdf called `refman.pdf` for full source documentation.  
+Look for a doxygen-generated pdf called [`refman.pdf`](./refman.pdf) for full source documentation.  
 
 Source Code can be found in the `detection` directory.  
-

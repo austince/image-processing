@@ -26,6 +26,8 @@ def main():
 
     parser.add_argument('-gs', '--gaussian-sigma', help="Sigma for gaussian filter.", default=1, type=int)
     parser.add_argument('-t', '--threshold', help="Threshold for various suppression.", type=int)
+    parser.add_argument('-it', '--inlier-threshold', help="Inlier threshold for RANSAC suppression.", type=int)
+    parser.add_argument('-mi', '--min-inliers', help="Minimum acceptable inliers for RANSAC.", type=int)
 
     parser.add_argument('-op', '--operation', help="The operation to return.", required=True, type=str,
                         choices=[
@@ -68,7 +70,10 @@ def main():
         elif args.operation in ['ransac', 'rn']:
             operation = 'ransac'
             cprint('Starting ' + operation + '!', 'green')
-            processed = ransac.detect(image, gaus_sig=args.gaussian_sigma)
+            if args.min_inliers is not None:
+                processed = ransac.detect(image, min_inliers=args.min_inliers, gaus_sig=args.gaussian_sigma)
+            else:
+                processed = ransac.detect(image, gaus_sig=args.gaussian_sigma)
 
         elif args.operation in ['hessian', 'hs']:
             operation = 'hessian'
@@ -80,7 +85,10 @@ def main():
 
         elif args.operation in ['hough-transform', 'hough', 'ho']:
             operation = 'hough-transform'
-            processed = hough.detect(image, gaus_sig=args.gaussian_sigma)
+            if args.threshold is not None:
+                processed = hough.detect(image, feature_threshold=args.threshold, gaus_sig=args.gaussian_sigma)
+            else:
+                processed = hough.detect(image, gaus_sig=args.gaussian_sigma)
 
     except FileNotFoundError:
         cprint("Can't load image file: " + str(args.input), 'red')
