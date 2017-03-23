@@ -1,3 +1,5 @@
+""" General utilities used in various operations
+"""
 import numpy as np
 from skimage.draw import line_aa
 

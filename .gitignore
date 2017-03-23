@@ -73,3 +73,5 @@ fabric.properties
 *out/
 build-submission.zip
 #results/
+*.pdf
+docs/

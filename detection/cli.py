@@ -1,3 +1,6 @@
+"""
+The command line interface
+"""
 import argparse
 import os
 import sys
@@ -11,6 +14,10 @@ from detection.operations.suppression import threshold_image
 
 
 def main():
+    """The exported main function
+    
+    :return: 
+    """
     parser = argparse.ArgumentParser(description='Image detection for cs 558')
     parser.add_argument('-v', '--version', action='version', version=__version__)
 
@@ -31,17 +38,19 @@ def main():
                         ])
 
     args = parser.parse_args()
-
+    operation = ''
     try:
         cprint('Processing file: ' + str(args.input), 'green')
         image = misc.imread(args.input, flatten=True)
 
-        cprint('Starting ' + args.operation + '!', 'green')
-
         if args.operation in ['gaussian', 'g']:
+            operation = 'gaussian'
+            cprint('Starting ' + operation + '!', 'green')
             processed = gaussian.filter_image(image, args.gaussian_sigma)
 
         elif args.operation in ['gradient-magnitude', 'grad-mag', 'gm']:
+            operation = 'gradient-magnitude'
+            cprint('Starting ' + operation + '!', 'green')
             processed = gaussian.filter_image(image, args.gaussian_sigma)
             if args.threshold is not None:
                 processed = threshold_image(processed, args.threshold)
@@ -49,22 +58,29 @@ def main():
                 processed = threshold_image(processed)
 
         elif args.operation in ['edges', 'canny']:
+            operation = 'canny'
+            cprint('Starting ' + operation + '!', 'green')
             if args.threshold is not None:
                 processed = canny.detect(image, args.gaussian_sigma, args.threshold)
             else:
                 processed = canny.detect(image, args.gaussian_sigma)
 
-        elif args.operation in ['ransac', 'r']:
-            processed = ransac.detect(image)
+        elif args.operation in ['ransac', 'rn']:
+            operation = 'ransac'
+            cprint('Starting ' + operation + '!', 'green')
+            processed = ransac.detect(image, gaus_sig=args.gaussian_sigma)
 
         elif args.operation in ['hessian', 'hs']:
+            operation = 'hessian'
+            cprint('Starting ' + operation + '!', 'green')
             if args.threshold is not None:
                 processed, points = hessian.detect(image, threshold=args.threshold, gaus_sig=args.gaussian_sigma)
             else:
                 processed, points = hessian.detect(image, gaus_sig=args.gaussian_sigma)
 
         elif args.operation in ['hough-transform', 'hough', 'ho']:
-            processed = hough.detect(image)
+            operation = 'hough-transform'
+            processed = hough.detect(image, gaus_sig=args.gaussian_sigma)
 
     except FileNotFoundError:
         cprint("Can't load image file: " + str(args.input), 'red')
@@ -86,7 +102,13 @@ def main():
     else:
         input_dir, input_filename = os.path.split(args.input)
         # default to the format [operation].[original filename].[original extension]
-        out_path = './' + args.operation + '.' + input_filename
+        prefix = './' + operation + '.' + 'gs-' + str(args.gaussian_sigma) + '.'
+        if args.threshold is not None:
+            prefix += 't-' + str(args.threshold) + '.'
+
+        out_path = prefix + input_filename
+
+    cprint('Saving to: ' + out_path, 'green')
 
     # misc.imshow(processed)
     misc.imsave(out_path, processed)

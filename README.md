@@ -19,6 +19,11 @@ If you do not want do install, you can run with:
 ## Dependencies
 Needs PIL / Pillow install on the system to work with images. 
 
+## Dev Dependencies
+* Doxygen
+* Pandoc
+* Latex
+
 ## Running
 
 The cli is available with a few options.
@@ -33,3 +38,9 @@ $ detection -i [INPUT FILE] -o [OUTPUT DEST] [OPTIONS]
 * `-t [NUMBER]` : Specify a threshold for the various suppression
 * `-gs [NUMBER]` : Specify the sigma to be used for the Gaussian filter
 * `-op [OPERATION]` : Specify the operation to perform
+
+## Documentation
+Look for a doxygen-generated pdf called `refman.pdf` for full source documentation.  
+
+Source Code can be found in the `detection` directory.  
+

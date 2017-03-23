@@ -1,3 +1,5 @@
+""" Hessian Feature Detection
+"""
 from termcolor import cprint
 import numpy as np
 from scipy import misc
@@ -30,14 +32,14 @@ def hessian_suppress(image, determinants, vicinity):
                 image[x][y] = 0
 
 
-def detect(image, threshold=5000, gaus_sig=1, vicinity=3):
+def detect(image, threshold=50000, gaus_sig=1, vicinity=3):
     """
     Apply Gaussian Filter first
     Use Sobel filters as derivative operators
     Threshold the determinant of the Hessian
     Apply non-maximum suppression in 3 x 3 neighborhoods / vicinity
     
-    Hessian(I) = [ Ixx Ixy] 
+    Hessian(I) = [Ixx Ixy] 
                  [Ixy Iyy] 
     
     :param image: 
