@@ -27,6 +27,7 @@ def fitline_many_points(points):
     try:
         bs = np.linalg.inv(xs.transpose() * xs) * xs.transpose() * ys
     except np.linalg.linalg.LinAlgError:
+        # Do the ol' 2 point fit if there's an error
         return fitline(points)
 
     m, b_inter = bs[0].item(), bs[1].item()
@@ -109,7 +110,7 @@ def plot_inlier_lines(lines, image, max_to_plot=4, inlier_sq_size=3):
             plot_line(start, end, image)
 
 
-def detect(image, subsample_size=2, num_best=4, min_inliers=4, inlier_threshold=None, feature_threshold=None, gaus_sig=1):
+def detect(image, subsample_size=2, num_best=4, min_inliers=10, inlier_threshold=None, feature_threshold=None, gaus_sig=1):
     """
     
     :param image: 
@@ -160,8 +161,8 @@ def detect(image, subsample_size=2, num_best=4, min_inliers=4, inlier_threshold=
             while subset is None or subset in subsets:
                 subset = subsample(feat_points, subsample_size)
 
-            distance_to_model, _ = fitline(subset)
-            inliers = find_inliers(distance_to_model, inlier_threshold, feat_points)
+            distance_to_model_func, _ = fitline(subset)
+            inliers = find_inliers(distance_to_model_func, inlier_threshold, feat_points)
 
             # add to inlier_lines
             if len(inliers) >= min_inliers:

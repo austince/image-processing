@@ -7,11 +7,7 @@ from detection.operations.utils import local_maxes_2d, plot_square, plot_line, m
 from detection.operations.hessian import detect as feature_detect
 
 
-def plot_best_lines(accumulator, points_in_bins, image, max_to_plot=4, inlier_sq_size=3):
-    # Find local maximums
-    cprint('Finding local vote maximums', 'yellow')
-    maxes = local_maxes_2d(accumulator)
-
+def plot_best_lines(maxes, points_in_bins, image, max_to_plot=4, inlier_sq_size=3):
     for line_index in range(max_to_plot):
         line = points_in_bins[maxes[line_index]]
 
@@ -26,7 +22,9 @@ def plot_best_lines(accumulator, points_in_bins, image, max_to_plot=4, inlier_sq
 def detect(image, feature_threshold=None, gaus_sig=1):
     """
     
-    :param image: 
+    :param image:
+    :param feature_threshold:
+    :param gaus_sig:
     :return: 
     """
 
@@ -58,6 +56,10 @@ def detect(image, feature_threshold=None, gaus_sig=1):
             accumulator[theta][rho] += 1
             points_in_bins[theta][rho].append(point)
 
-    plot_best_lines(accumulator, points_in_bins, image)
+    # Find local maximums
+    cprint('Finding local vote maximums', 'yellow')
+    maxes = local_maxes_2d(accumulator)
+    # Todo: try max just by accumulated value
+    plot_best_lines(maxes, points_in_bins, image)
 
     return image

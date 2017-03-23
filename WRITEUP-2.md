@@ -14,6 +14,7 @@ The results of this assignment use mainly the Road.
 Road  
 ![Road](./tests/images/road.png "Road")  
 
+<!--
 Kangaroo  
 ![Kangaroo](./tests/images/kangaroo.png "Kangaroo")  
   
@@ -22,6 +23,7 @@ Red
   
 Plane  
 ![Plane](./tests/images/plane.png "Plane")  
+-->
   
 ## Hessian Feature Detection
 
@@ -39,6 +41,16 @@ Then threshold the determinants, casting aside everything that doesn't pass.
 
 Finally, apply non-max suppression in 3x3 neighborhoods.
 
+**Gradient Examples:**  
+
+Road Ix:  
+![road ix](./results/gradient/road.ix.png "Road Ix")  
+
+Road Ixy:  
+![road ixy](./results/gradient/road.ixy.png "Road Ixy")  
+
+Road Iyy:  
+![road iyy](./results/gradient/road.iyy.png "Road Iyy")  
 
 ### Results
 Low threshold: 1000  
@@ -64,7 +76,9 @@ Absurdly High threshold: 151000
 
 ### Analysis
 The absurdly high thresholds tend to produce better features that are less likely to have
- mass amounts of outliers.
+ mass amounts of outliers.  
+The low threshold is completely crowded. As the threshold is increased, the shape and features of the 
+image become much more apparent.
 
 ## RANSAC Line Detection
 
@@ -102,7 +116,7 @@ The main problem are the gaps in the lines caused by parallel lines in the image
 windows frames in the `road.png` photo are collinear, causing the inlier calculation to extend
  the line's bounds past where the singular window stops.  
 
-ex:  
+ex:  thresh 71000  
 ![parallel problem](./results/ransac/road-t71000.png "Parallel Problem")  
 
 Here, the algorithm correctly identifies many of the common lines in the image, but links them
@@ -113,7 +127,8 @@ or one that casts away points that are dissimilar from the rest of the line.
 
 **Minimum Inlier Threshold:**  
 Though there are the parallel problems, raising the number of inliers to be considered a 'line' seems 
-to help the algorithm choose only the lines that are closest together. 
+to help the algorithm choose only the lines that are closest together. As we get higher, we risk 
+make it so no line will be able to qualify as a good line.
 
 
 ## Hough Transform Line Detection

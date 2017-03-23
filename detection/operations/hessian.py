@@ -32,7 +32,7 @@ def hessian_suppress(image, determinants, vicinity):
                 image[x][y] = 0
 
 
-def detect(image, threshold=150000, gaus_sig=1, vicinity=3):
+def detect(image, threshold=125000, gaus_sig=1, vicinity=3):
     """
     Apply Gaussian Filter first
     Use Sobel filters as derivative operators
@@ -49,7 +49,7 @@ def detect(image, threshold=150000, gaus_sig=1, vicinity=3):
     :return: 
     """
     if threshold is None:
-        threshold = 150000
+        threshold = 125000
 
     # Make a copy so we don't lose the original
     cprint('Applying Gaussian', 'yellow')
