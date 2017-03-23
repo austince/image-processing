@@ -71,7 +71,7 @@ crashlytics.properties
 crashlytics-build.properties
 fabric.properties
 *out/
-build-submission.zip
+*.zip
 #results/
 *.pdf
 docs/
