@@ -4,9 +4,9 @@ DIR=$(pwd)
 PKG_NAME=detection
 
 if [ $1 ]; then
-FILENAME="CAWLEY-EDWARDS_Austin_${1}.zip"
+	FILENAME="CAWLEY-EDWARDS_Austin_${1}.zip"
 else
-FILENAME="CAWLEY-EDWARDS_Austin.zip"
+	FILENAME="CAWLEY-EDWARDS_Austin.zip"
 fi
 
 # Readme documentation

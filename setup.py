@@ -65,6 +65,7 @@ setup(
     entry_points={
         'console_scripts': [
             'detection=detection.cli:main',
+            'segmentation=detection.segmentation.cli:main'
         ],
     },
     cmdclass={'test': RunTests},
