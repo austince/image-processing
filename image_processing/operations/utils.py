@@ -3,6 +3,7 @@
 import numpy as np
 from skimage.draw import line_aa
 from termcolor import cprint
+import sys
 
 
 def cprint_progressbar(iteration, total, prefix='Progress:', suffix='Complete', decimals=1, length=50, fill='x', color='yellow'):
@@ -13,6 +14,7 @@ def cprint_progressbar(iteration, total, prefix='Progress:', suffix='Complete', 
     # Print newline on complete
     if iteration == total:
         print()
+        sys.stdout.flush()
 
 
 def subsample(sample, sub_size):

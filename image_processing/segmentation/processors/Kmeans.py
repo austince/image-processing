@@ -26,7 +26,7 @@ def vec_average(vecs):
     avg[1] /= len(vecs)
     avg[2] /= len(vecs)
 
-    return np.asarray(avg)
+    return np.asarray(avg).astype('int16')
 
 
 def vec_distance(vec1, vec2):
@@ -61,15 +61,21 @@ class Cluster:
     def recenter(self):
         """
         
-        :return: 
+        :return: true if changed, false is the same
         """
+        if len(self.vecs) == 0:
+            return False
+
         mean = vec_average(self.vecs)
         old_center = self.center_vec
         self.center_vec = mean
         return (old_center != self.center_vec).all()
 
     def reset_vecs(self):
-        self.vecs = []
+        self.vecs.clear()
+
+    def add_vec(self, vec):
+        self.vecs.append(vec)
 
 
 class Kmeans(Processor):
@@ -77,38 +83,56 @@ class Kmeans(Processor):
     A K-means implementation
     """
     
-    def __init__(self, image, k=10, verbose=True):
-        self.k = k
-        self.image = image
+    def __init__(self, image, cli_args=None, k=10):
+        super(Kmeans, self).__init__(cli_args=cli_args)
+
+        if cli_args.k_value:
+            self.k = cli_args.k_value
+        else:
+            self.k = k
+        self.image = image.astype('int64')
         self.clusters = []
         max_y, max_x, _ = image.shape
         self.point_clusters = np.ndarray(shape=(max_y, max_x), dtype=Cluster)
-        self.verbose = verbose
 
     def recenter_clusters(self):
-        center_changed = False
+        centers_changed = False
+        num_changed = 0
         for i in range(len(self.clusters)):
             if self.verbose:
-                cprint_progressbar(i, len(self.clusters), prefix='Cluster Centered:')
+                cprint_progressbar(i, len(self.clusters) - 1, prefix='Clusters Centered:')
 
-            center_changed = self.clusters[i].recenter() | center_changed
+            changed = self.clusters[i].recenter()
 
-        return center_changed
+            if changed:
+                num_changed += 1
+
+            # If any cluster has changed centers, report True
+            centers_changed = changed | centers_changed
+
+        if self.verbose:
+            cprint('Number of changed centers: ' + str(num_changed), 'yellow')
+
+        return centers_changed
 
     def reset_points(self):
         for cluster in self.clusters:
             cluster.reset_vecs()
 
     def recenter_points(self):
+        # First reset all the points in the clusters
+        self.reset_points()
+
+        # Then center all points of the image
         max_y, max_x, _ = self.image.shape
         for y in range(max_y):
             for x in range(max_x):
                 if self.verbose:
-                    cprint_progressbar((y * max_x) + x, max_x * max_y, prefix='Point Centered:')
+                    cprint_progressbar((y * max_x) + x, max_x * max_y, prefix='Points Centered:')
                 point = (y, x)
-                point_vec = self.image[(y, x)]
+                point_vec = self.image[point]
                 closest = self.closest_cluster(point_vec)
-                closest.vecs.append(point_vec)
+                closest.add_vec(point_vec)
                 # Keep track of which point is where for overlay
                 self.point_clusters[point] = closest
 
@@ -116,7 +140,7 @@ class Kmeans(Processor):
         closest = self.clusters[0]
         closest_dist = closest.distance_to_center(vec)
 
-        for clust in self.clusters:
+        for clust in self.clusters[1:]:
             dist = clust.distance_to_center(vec)
             if dist < closest_dist:
                 closest_dist = dist
@@ -142,10 +166,15 @@ class Kmeans(Processor):
         max_y, max_x, _ = self.image.shape
         center_points = []
 
+        print()
+        cprint('Info:', 'cyan')
+        cprint('Total points: ' + str(max_x * max_y), 'yellow')
+        print()
+
         cprint('Sampling centers', 'yellow')
         # Randomly sample centers
         for i in range(self.k):
-            # Randomly add a center
+            # Randomly add a center that has not yet been picked
             point = None
             while point is None or point in center_points:
                 point = (
@@ -158,15 +187,18 @@ class Kmeans(Processor):
         self.recenter_points()
 
         cprint('Initial cluster recenter', 'yellow')
+
+        num_loops = 1
         # Find closest centers
         while self.recenter_clusters():
-            cprint('Recentering loop')
+            cprint('Recentering loop #' + str(num_loops), 'yellow')
+            num_loops += 1
             # Repeat until all clusters have found their optimal centers
             self.recenter_points()
 
-        cprint('Centering complete')
+        cprint('Centering complete', 'green')
 
-        cprint('Overlaying')
+        cprint('Overlaying', 'yellow')
         self.overlay()
 
         return self.image

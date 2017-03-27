@@ -8,21 +8,25 @@ import sys
 from scipy import misc
 from termcolor import cprint
 
-from . import __version__
-from . import processors
+from image_processing.segmentation import __version__
+from image_processing.segmentation import processors
 
 
 def main():
     """The exported main function
     :return: 
     """
-    parser = argparse.ArgumentParser(description='Image image_processing for cs 558')
+    parser = argparse.ArgumentParser(description='Image segmentation for cs 558')
     parser.add_argument('-v', '--version', action='version', version=__version__)
 
     parser.add_argument('-i', '--input', help="The input image to process.", required=True, type=str)
     parser.add_argument('-o', '--output', help="Where to put the output.", type=str)
 
+    parser.add_argument('-vb', '--verbose', help="Printouts?", dest='verbose', action='store_true')
+    parser.set_defaults(verbose=True)
+
     parser.add_argument('-gs', '--gaussian-sigma', help="Sigma for gaussian filter.", default=1, type=int)
+    parser.add_argument('-kv', '--k-value', help="K value for K-Means operation", default=None, type=int)
 
     parser.add_argument('-op', '--operation', help="The operation to return.", required=True, type=str,
                         choices=[
@@ -39,7 +43,7 @@ def main():
 
         if args.operation in ['k-means', 'k']:
             operation = 'k-means'
-            processor = processors.Kmeans(image)
+            processor = processors.Kmeans(image, cli_args=args)
         elif args.operation in ['SLIC', 'slic', 's']:
             operation = 'SLIC'
             processor = processors.Slic()
@@ -50,6 +54,9 @@ def main():
     except FileNotFoundError:
         cprint("Can't load image file: " + str(args.input), 'red')
         sys.exit(1)
+    except KeyboardInterrupt:
+        cprint('Quitting before save!', 'red')
+        sys.exit(0)
     except Exception as ex:
         raise ex  # For Development
         cprint('Error processing ' + args.input + ": " + str(ex), 'red')

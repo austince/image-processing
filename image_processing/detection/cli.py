@@ -18,7 +18,7 @@ def main():
     
     :return: 
     """
-    parser = argparse.ArgumentParser(description='Image image_processing for cs 558')
+    parser = argparse.ArgumentParser(description='Image detection for cs 558')
     parser.add_argument('-v', '--version', action='version', version=__version__)
 
     parser.add_argument('-i', '--input', help="The input image to process.", required=True, type=str)
@@ -93,8 +93,11 @@ def main():
     except FileNotFoundError:
         cprint("Can't load image file: " + str(args.input), 'red')
         sys.exit(1)
+    except KeyboardInterrupt:
+        cprint('Quitting before save!', 'red')
+        sys.exit(0)
     except Exception as ex:
-        raise ex  # For Development
+        # raise ex  # For Development
         cprint('Error processing ' + args.input + ": " + str(ex), 'red')
         sys.exit(1)
 
