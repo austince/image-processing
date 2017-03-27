@@ -1,7 +1,7 @@
 """
 Simple image detection operations
 """
-import detection.operations as operations
+import image_processing.operations as operations
 
 __version__ = "2.0.0"
 __author__ = "austin cawley-edwards <acawleye@stevens.edu>"

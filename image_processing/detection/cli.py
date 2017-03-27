@@ -8,9 +8,9 @@ import sys
 from scipy import misc
 from termcolor import cprint
 
-from detection import __version__
-from detection.operations import gaussian, canny, ransac, hessian, hough
-from detection.operations.suppression import threshold_image
+from image_processing import __version__
+from image_processing.operations import gaussian, canny, ransac, hessian, hough
+from image_processing.operations.suppression import threshold_image
 
 
 def main():
@@ -18,7 +18,7 @@ def main():
     
     :return: 
     """
-    parser = argparse.ArgumentParser(description='Image detection for cs 558')
+    parser = argparse.ArgumentParser(description='Image image_processing for cs 558')
     parser.add_argument('-v', '--version', action='version', version=__version__)
 
     parser.add_argument('-i', '--input', help="The input image to process.", required=True, type=str)

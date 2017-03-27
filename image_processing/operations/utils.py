@@ -2,6 +2,17 @@
 """
 import numpy as np
 from skimage.draw import line_aa
+from termcolor import cprint
+
+
+def cprint_progressbar(iteration, total, prefix='Progress:', suffix='Complete', decimals=1, length=50, fill='x', color='yellow'):
+    percent = ("{0:." + str(decimals) + "f}").format(100 * iteration / float(total))
+    filled_len = int(length * iteration // total)
+    bar = fill * filled_len + '-' * (length - filled_len)
+    cprint('\r%s |%s| %s%% %s' % (prefix, bar, percent, suffix), end='\r', color=color)
+    # Print newline on complete
+    if iteration == total:
+        print()
 
 
 def subsample(sample, sub_size):

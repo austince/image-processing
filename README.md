@@ -29,20 +29,29 @@ Needs PIL / Pillow install on the system to work with images.
 * Latex
 
 ## Running
+Two CLIs are available with a few options.
 
-The cli is available with a few options.
-
+### Detection
 ```bash
 $ detection --help # Prints options
 $ detection -i [INPUT FILE] -o [OUTPUT DEST] [OPTIONS]
 ```
 
-### Options
+#### Options
 
 * `-t [NUMBER]` : Specify a threshold for the various suppression
 * `-gs [NUMBER]` : Specify the sigma to be used for the Gaussian filter
 * `-op [OPERATION]` : Specify the operation to perform
 * Many others found in with `-h` flags
+
+
+### Segmentation
+```bash
+$ segmentation --help # Prints options
+$ segmentation -i [INPUT FILE] -o [OUTPUT DEST] [OPTIONS]
+```
+
+
 
 ## Documentation
 Look for a doxygen-generated pdf called [`refman.pdf`](./refman.pdf) for full source documentation.  

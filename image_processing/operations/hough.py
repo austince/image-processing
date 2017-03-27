@@ -3,8 +3,8 @@
 from termcolor import cprint
 import numpy as np
 
-from detection.operations.utils import local_maxes_2d, plot_square, plot_line, most_extreme_points
-from detection.operations.hessian import detect as feature_detect
+from image_processing.operations.utils import local_maxes_2d, plot_square, plot_line, most_extreme_points
+from image_processing.operations.hessian import detect as feature_detect
 
 
 def plot_best_lines(maxes, points_in_bins, image, max_to_plot=4, inlier_sq_size=3):

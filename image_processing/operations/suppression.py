@@ -1,7 +1,7 @@
 """ Non-max suppression for canny edge detection
 """
 import numpy as np
-from detection.operations.sobel import gradient, gradient_magnitude, gradient_direction
+from image_processing.operations.sobel import gradient, gradient_magnitude, gradient_direction
 
 
 def threshold_point(x, y, image, original, threshold):

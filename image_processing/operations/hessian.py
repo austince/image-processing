@@ -4,9 +4,9 @@ from termcolor import cprint
 import numpy as np
 from scipy import misc
 
-from detection.operations.utils import max_in_vicinity
-from detection.operations import gaussian
-from detection.operations import sobel
+from image_processing.operations.utils import max_in_vicinity
+from image_processing.operations import gaussian
+from image_processing.operations import sobel
 
 
 def hessian_suppress(image, determinants, vicinity):

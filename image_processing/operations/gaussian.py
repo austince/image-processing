@@ -2,7 +2,7 @@
 """
 import numpy as np
 
-from detection.operations.convolution import convolve_replicate_bounds
+from image_processing.operations.convolution import convolve_replicate_bounds
 
 
 def build_gaussian_kernel(sigma, scale):

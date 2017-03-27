@@ -2,7 +2,7 @@
 from subprocess import PIPE, Popen as popen
 from unittest import TestCase
 
-from detection import __version__ as VERSION
+from image_processing import __version__ as VERSION
 
 
 class TestHelp(TestCase):

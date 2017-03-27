@@ -2,7 +2,7 @@
 import glob, os
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
-test_images_dir_path = dir_path + '/images/'
+test_images_dir_path = dir_path + '/resources/'
 test_images_list = glob.glob(test_images_dir_path + '*')
 
 test_images_dict = {}

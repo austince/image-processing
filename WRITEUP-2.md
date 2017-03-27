@@ -12,16 +12,16 @@ as a summary of the results.
 The results of this assignment use mainly the Road.  
   
 Road  
-![Road](./tests/images/road.png "Road")  
+![Road](tests/resources/road.png "Road")  
 
 Kangaroo  
-![Kangaroo](./tests/images/kangaroo.png "Kangaroo")  
+![Kangaroo](tests/resources/kangaroo.png "Kangaroo")  
   
 Red  
-![Red](./tests/images/red.png "Red")    
+![Red](tests/resources/red.png "Red")    
   
 Plane  
-![Plane](./tests/images/plane.png "Plane")  
+![Plane](tests/resources/plane.png "Plane")  
 
   
 ## Hessian Feature Detection

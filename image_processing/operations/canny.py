@@ -2,7 +2,7 @@
 """
 from scipy import misc
 from termcolor import cprint
-from detection.operations import gaussian, sobel, suppression
+from image_processing.operations import gaussian, sobel, suppression
 
 
 def detect(image, g_sig=1, threshold=100):

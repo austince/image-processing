@@ -3,7 +3,7 @@ from os.path import abspath, dirname, join
 from subprocess import call
 from setuptools import Command, find_packages, setup
 
-from detection import __version__
+from image_processing import __version__
 
 this_dir = abspath(dirname(__file__))
 with open(join(this_dir, 'README.md'), encoding='utf-8') as file:
@@ -27,16 +27,16 @@ class RunTests(Command):
     def run(self):
         """Run all tests!"""
         errno = call(['py.test',
-                      '--cov=detection',
+                      '--cov=image_processing',
                       '--cov-report=term-missing',
                       '--ignore=env'])
         raise SystemExit(errno)
 
 
 setup(
-    name='detection',
+    name='image_processing',
     version=__version__,
-    description='basic image processing / edge detection for cs 558',
+    description='basic image processing / edge image_processing for cs 558',
     long_description=long_description,
     url='',
     author='Randall Degges',
@@ -64,8 +64,8 @@ setup(
     },
     entry_points={
         'console_scripts': [
-            'detection=detection.cli:main',
-            'segmentation=detection.segmentation.cli:main'
+            'image_processing=image_processing.detection.cli:main',
+            'segmentation=image_processing.segmentation.cli:main'
         ],
     },
     cmdclass={'test': RunTests},
