@@ -3,7 +3,7 @@
 from termcolor import cprint
 import numpy as np
 
-from image_processing.operations.utils import local_maxes_2d, plot_square, plot_line, most_extreme_points
+from image_processing.utils import local_maxes_2d, plot_square, plot_line, most_extreme_points
 from image_processing.operations.hessian import detect as feature_detect
 
 

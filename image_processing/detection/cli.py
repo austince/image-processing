@@ -32,7 +32,7 @@ def main():
     parser.add_argument('-op', '--operation', help="The operation to return.", required=True, type=str,
                         choices=[
                             'gaussian', 'g',
-                            'gradient-magnitude', 'grad-mag', 'gm'
+                            'gradient-magnitude', 'grad-mag', 'gm',
                             'edges', 'canny',
                             'ransac', 'rn',
                             'hessian', 'hs',

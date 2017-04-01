@@ -6,11 +6,17 @@ from termcolor import cprint
 import sys
 
 
-def cprint_progressbar(iteration, total, prefix='Progress:', suffix='Complete', decimals=1, length=50, fill='x', color='yellow'):
-    percent = ("{0:." + str(decimals) + "f}").format(100 * iteration / float(total))
-    filled_len = int(length * iteration // total)
-    bar = fill * filled_len + '-' * (length - filled_len)
-    cprint('\r%s |%s| %s%% %s' % (prefix, bar, percent, suffix), end='\r', color=color)
+def cprint_progressbar(iteration, total, prefix='Progress:', suffix='Complete', decimals=1,
+                       length=50, fill='x', color='yellow'):
+    if total == 0:
+        percent = 1
+    else:
+        percent = iteration / float(total)
+
+    percent_str = ("{0:." + str(decimals) + "f}").format(100 * percent)
+    filled_len = int(length * int(percent))
+    bar_str = fill * filled_len + '-' * (length - filled_len)
+    cprint('\r%s |%s| %s%% %s' % (prefix, bar_str, percent_str, suffix), end='\r', color=color)
     # Print newline on complete
     if iteration == total:
         print()

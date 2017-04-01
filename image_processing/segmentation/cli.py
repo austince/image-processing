@@ -36,7 +36,7 @@ def main():
 
     args = parser.parse_args()
     operation = ''
-    processor = processors.Processor()
+    processor = None
     try:
         cprint('Processing file: ' + str(args.input), 'green')
         image = misc.imread(args.input)
@@ -46,7 +46,7 @@ def main():
             processor = processors.Kmeans(image, cli_args=args)
         elif args.operation in ['SLIC', 'slic', 's']:
             operation = 'SLIC'
-            processor = processors.Slic()
+            processor = processors.Slic(image, cli_args=args)
 
         cprint('Starting ' + operation + '!', 'green')
         processed = processor.process()
@@ -74,7 +74,7 @@ def main():
     else:
         input_dir, input_filename = os.path.split(args.input)
         # default to the format [operation].[original filename].[original extension]
-        prefix = './' + operation + '.' + 'gs-' + str(args.gaussian_sigma) + '.'
+        prefix = './' + operation + '.' + processor.get_file_prefix() + '.'
 
         out_path = prefix + input_filename
 

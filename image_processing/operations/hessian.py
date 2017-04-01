@@ -4,7 +4,7 @@ from termcolor import cprint
 import numpy as np
 from scipy import misc
 
-from image_processing.operations.utils import max_in_vicinity
+from image_processing.utils import max_in_vicinity
 from image_processing.operations import gaussian
 from image_processing.operations import sobel
 

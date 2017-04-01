@@ -5,7 +5,7 @@ import numpy as np
 from scipy import stats
 
 from image_processing.operations.hessian import detect as feature_detect
-from image_processing.operations.utils import subsample, plot_line, plot_square, most_extreme_points
+from image_processing.utils import subsample, plot_line, plot_square, most_extreme_points
 
 
 def distance_to_model(a, b, c, point):

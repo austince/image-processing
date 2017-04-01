@@ -64,7 +64,7 @@ setup(
     },
     entry_points={
         'console_scripts': [
-            'image_processing=image_processing.detection.cli:main',
+            'detection=image_processing.detection.cli:main',
             'segmentation=image_processing.segmentation.cli:main'
         ],
     },

@@ -1,17 +1,19 @@
 #!/usr/bin/env bash
 
-DIR=$(pwd)
-PKG_NAME=detection
 
-if [ $1 ]; then
-	FILENAME="CAWLEY-EDWARDS_Austin_${1}.zip"
-else
-	FILENAME="CAWLEY-EDWARDS_Austin.zip"
+if [ $1 == 'help' ]; then
+	echo "Usage: build-submission.sh [ZIP_EXT] [WRITEUP-FILE]"
+	exit 0
 fi
 
+DIR=$(pwd)
+PKG_NAME=image_processing
+FILENAME="CAWLEY-EDWARDS_Austin_${1}.zip"
+WRITEUP_FILE=${2}
+
 # Readme documentation
-#pandoc -s -o README.pdf README.md WRITEUP-2.md
-pandoc -s -o README.pdf -t html5 --css readme.css README.md WRITEUP-2.md
+#pandoc -s -o README.pdf README.md ${WRITEUP_FILE}
+pandoc -s -o README.pdf -t html5 --css readme.css README.md ${WRITEUP_FILE}
 
 doxygen doxygen.config
 cd docs/latex
