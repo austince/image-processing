@@ -79,10 +79,11 @@ solved after a thorough reading.
 ![SLIC Success 1](./results/slic/wt_slic.cw50-ch50.png "Slic with 50 x 50 clusters")  
 
 50 x 50 Clusters without borders  
-![SLIC Success 1](./results/slic/wt_slic.cw50-ch50.no-borders.png "Slic with 50 x 50 clusters")  
-Here you can see the 
+![SLIC Success 2](./results/slic/wt_slic.cw50-ch50.no-borders.png "Slic with 50 x 50 clusters no borders")  
+Here you can see the dense areas are truly scattered with *orphan pixels*.  
 
-
+100 x 100 Clusters with borders and higher error tolerance  
+![SLIC Success 3](./results/slic/wt_slic.cw50-ch50.png "Slic with 100 x 100 clusters")  
 
 25 x 25 Cluster with border of the K-means Sample Photo  
 ![SLIC Success 1](results/slic/SLIC.cw25-ch25-se0.5.white-tower.png "Slic with 50 x 50 clusters")  
@@ -106,6 +107,9 @@ are not too worried about these at this point.
 ### Extra Fun Stuff
 
 Here is a photo processed first with Kmeans, then with SLIC:  
-
+![SLIC on Kmeans](results/misc/SLIC.cw25-ch25-se0.05.kmeans-white-tower-k15.png "SLIC on Kmeans")  
 
 And here is the other way around:  
+![Kmeans on SLIC](results/misc/k-means.k-5.wt_slic.cw50-ch50.no-borders.png "Kmeans on SLIC")  
+
+They actually don't look too far off from their single-processed counterparts. Interesting.  

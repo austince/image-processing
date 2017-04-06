@@ -33,7 +33,7 @@ def main():
     parser.add_argument('-ch', '--cluster-height', help="Height of clusters for SLIC operation", default=None, type=int)
     parser.add_argument('-se', '--stop-error', help="Residual Error to stop under for SLIC operation", default=None, type=float)
 
-    parser.add_argument('-sb', '--no-borders', help="Don't show borders on SLIC clusters?",
+    parser.add_argument('-nb', '--no-borders', help="Don't show borders on SLIC clusters?",
                         dest='no_borders', action='store_true')
 
     parser.add_argument('-op', '--operation', help="The operation to return.", required=True, type=str,

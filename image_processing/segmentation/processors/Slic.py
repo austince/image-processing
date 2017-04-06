@@ -367,4 +367,4 @@ class Slic(ClusterProcessor):
         return self.image
 
     def get_file_prefix(self):
-        return 'cw%d-ch%d-se%f' % (self.cluster_width, self.cluster_height, self.stop_error)
+        return 'cw%d-ch%d-se%0.3f' % (self.cluster_width, self.cluster_height, self.stop_error)
