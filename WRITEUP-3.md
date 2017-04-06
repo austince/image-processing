@@ -83,7 +83,7 @@ solved after a thorough reading.
 Here you can see the dense areas are truly scattered with *orphan pixels*.  
 
 100 x 100 Clusters with borders and higher error tolerance  
-![SLIC Success 3](./results/slic/wt_slic.cw50-ch50.png "Slic with 100 x 100 clusters")  
+![SLIC Success 3](./results/slic/SLIC.cw100-ch100-se0.100.wt_slic.png "Slic with 100 x 100 clusters")  
 
 25 x 25 Cluster with border of the K-means Sample Photo  
 ![SLIC Success 1](results/slic/SLIC.cw25-ch25-se0.5.white-tower.png "Slic with 50 x 50 clusters")  
