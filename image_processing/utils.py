@@ -4,10 +4,23 @@ import numpy as np
 from skimage.draw import line_aa
 from termcolor import cprint
 import sys
+import warnings
 
 
 def cprint_progressbar(iteration, total, prefix='Progress:', suffix='Complete', decimals=1,
                        length=50, fill='x', color='yellow'):
+    """
+    A terminal progress bar
+    :param iteration: 
+    :param total: 
+    :param prefix: 
+    :param suffix: 
+    :param decimals: 
+    :param length: 
+    :param fill: 
+    :param color: 
+    :return: 
+    """
     if total == 0:
         percent = 1
     else:
@@ -21,6 +34,78 @@ def cprint_progressbar(iteration, total, prefix='Progress:', suffix='Complete', 
     if iteration == total:
         print()
         sys.stdout.flush()
+
+
+def vec_nd_average(vecs):
+    if len(vecs) == 0:
+        return np.asarray([0])
+    dimensions = vecs[0].shape
+    vec_sum = np.zeros(shape=dimensions, dtype='int32')
+
+    for v in vecs:
+        vec_sum = np.add(vec_sum, v, casting='same_kind')
+
+    return (vec_sum / len(vecs)).astype('int32')
+
+
+def vec_3d_average(vecs):
+    """
+
+    :param vecs: 
+    :return: 
+    """
+    vec_sum = np.zeros(shape=(3,), dtype='int32')
+
+    for v in vecs:
+        vec_sum[0] += v[0]
+        vec_sum[1] += v[1]
+        vec_sum[2] += v[2]
+
+    return (vec_sum / len(vecs)).astype('int32')
+
+
+def vec_nd_distance(vec1, vec2):
+    """
+
+    :param vec1: n dimensional vector
+    :param vec2: n dimensional vector
+    :return: 
+    """
+    sum_squares = 0
+    for i in range(len(vec1)):
+        sum_squares += (np.subtract(vec1[i], vec2[i], casting='same_kind') ** 2)
+
+    return np.sqrt(sum_squares)
+
+
+def vec_3d_distance(vec1, vec2):
+    return np.sqrt(
+        (vec1[0] - vec2[0]) ** 2 +
+        (vec1[1] - vec2[1]) ** 2 +
+        (vec1[2] - vec2[2]) ** 2
+    )
+
+
+def gradient_magnitude(grad):
+    """
+    Magnitude of a gradient 
+    :param grad: 
+    :return: 
+    """
+    return np.sqrt(np.square(grad[0]) + np.square(grad[1]))
+
+
+def gradient_direction(grad):
+    """
+    Returns radians
+    :param grad: x,y
+    :return: radians
+    """
+    # Division by 0 check
+    if grad[0] == 0:
+        return 1  # completely vertical, approx arctan of 90 degrees
+
+    return np.arctan(grad[1] / grad[0])
 
 
 def subsample(sample, sub_size):
@@ -60,7 +145,7 @@ def plot_square(point, side_len, image):
     :param image: 
     :return: 
     """
-    x_bounds, y_bounds = vicinity_bounds(point[0], point[1], side_len, image)
+    x_bounds, y_bounds = vicinity_bounds_image(point[0], point[1], side_len, image)
     for x in range(x_bounds[0], x_bounds[1]):
         for y in range(y_bounds[0], y_bounds[1]):
             image[x][y] = 1
@@ -97,8 +182,7 @@ def most_extreme_points(line):
     return start_point, end_point
 
 
-def vicinity_bounds(x, y, vicinity, image):
-    max_x, max_y = image.shape
+def vicinity_bounds(y, x, max_y, max_x, vicinity):
     v_len = int(vicinity / 2)
 
     min_x_range = x - v_len
@@ -117,7 +201,21 @@ def vicinity_bounds(x, y, vicinity, image):
     if max_y_range >= max_y:
         max_y_range = max_y - 1
 
-    return (min_x_range, max_x_range), (min_y_range, max_y_range)
+    return (min_y_range, max_y_range), (min_x_range, max_x_range)
+
+
+def vicinity_bounds_image(x, y, vicinity, image):
+    """
+    DEPRECATED
+    :param x: 
+    :param y: 
+    :param vicinity: 
+    :param image: f
+    :return: 
+    """
+    warnings.warn("Vicinity bounds are deprecated as x and y are reversed", DeprecationWarning)
+    max_x, max_y = image.shape
+    return vicinity_bounds(y, x, max_y, max_x, vicinity)
 
 
 def max_in_vicinity(x, y, image, vicinity):
@@ -131,7 +229,7 @@ def max_in_vicinity(x, y, image, vicinity):
     """
     max_val = image[x][y]
 
-    x_bounds, y_bounds = vicinity_bounds(x, y, vicinity, image)
+    x_bounds, y_bounds = vicinity_bounds_image(x, y, vicinity, image)
 
     for arr_x in range(x_bounds[0], x_bounds[1]):
         for arr_y in range(y_bounds[0], y_bounds[1]):
@@ -149,6 +247,7 @@ def local_maxes_2d(arr, vicinity=3):
     Finds coordinates of local maximums
     Sorts by max value
     :param arr: 2d array
+    :param vicinity: the size of the window to check in
     :return: 
     """
     maxes = []

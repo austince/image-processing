@@ -1,19 +1,19 @@
 """ Non-max suppression for canny edge detection
 """
 import numpy as np
-from image_processing.operations.sobel import gradient, gradient_magnitude, gradient_direction
+from image_processing.utils import gradient_magnitude, gradient_direction
+from image_processing.operations.sobel import point_gradient
 
 
 def threshold_point(x, y, image, original, threshold):
-    grad = gradient(x, y, original)
+    grad = point_gradient(x, y, original)
     if gradient_magnitude(grad) < threshold:
         # mark as 0
         image[x][y] = 0
 
 
 def threshold_image(image, threshold=100):
-    max_x = image.shape[0]
-    max_y = image.shape[1]
+    max_x, max_y = image.shape
 
     # Make a copy so we can suppress in place
     thresholded = image.copy()
@@ -36,8 +36,7 @@ def max_in_direction(x, y, direc, image):
     :param image:
     :return:
     """
-    max_x = image.shape[0]
-    max_y = image.shape[1]
+    max_x, max_y = image.shape
 
     if abs(direc) > 67.5:  # Approx 67.5 degrees
         # A more vertical gradient
@@ -90,7 +89,7 @@ def non_max_suppress_point(x, y, image, original):
     max_x, max_y = image.shape
 
     # Take gradient from original, NOT IMAGE BEING SUPPRESSED
-    grad = gradient(x, y, original)
+    grad = point_gradient(x, y, original)
 
     # process direction to make sure its a local max
     direc = gradient_direction(grad)

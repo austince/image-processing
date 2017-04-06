@@ -21,12 +21,20 @@ def main():
 
     parser.add_argument('-i', '--input', help="The input image to process.", required=True, type=str)
     parser.add_argument('-o', '--output', help="Where to put the output.", type=str)
+    parser.add_argument('-od', '--output-dir', help="Put Ddfault filename in this directory.", type=str)
 
     parser.add_argument('-vb', '--verbose', help="Printouts?", dest='verbose', action='store_true')
-    parser.set_defaults(verbose=True)
+    parser.set_defaults(verbose=False)
 
     parser.add_argument('-gs', '--gaussian-sigma', help="Sigma for gaussian filter.", default=1, type=int)
     parser.add_argument('-kv', '--k-value', help="K value for K-Means operation", default=None, type=int)
+
+    parser.add_argument('-cw', '--cluster-width', help="Width of clusters for SLIC operation", default=None, type=int)
+    parser.add_argument('-ch', '--cluster-height', help="Height of clusters for SLIC operation", default=None, type=int)
+    parser.add_argument('-se', '--stop-error', help="Residual Error to stop under for SLIC operation", default=None, type=float)
+
+    parser.add_argument('-sb', '--no-borders', help="Don't show borders on SLIC clusters?",
+                        dest='no_borders', action='store_true')
 
     parser.add_argument('-op', '--operation', help="The operation to return.", required=True, type=str,
                         choices=[
@@ -58,7 +66,7 @@ def main():
         cprint('Quitting before save!', 'red')
         sys.exit(0)
     except Exception as ex:
-        raise ex  # For Development
+        # raise ex  # For Development
         cprint('Error processing ' + args.input + ": " + str(ex), 'red')
         sys.exit(1)
 
@@ -74,9 +82,12 @@ def main():
     else:
         input_dir, input_filename = os.path.split(args.input)
         # default to the format [operation].[original filename].[original extension]
-        prefix = './' + operation + '.' + processor.get_file_prefix() + '.'
+        prefix = operation + '.' + processor.get_file_prefix() + '.'
 
-        out_path = prefix + input_filename
+        if args.output_dir is not None:
+            out_path = os.path.join(args.output_dir, prefix + input_filename)
+        else:
+            out_path = os.path.join(prefix + input_filename)
 
     cprint('Saving to: ' + out_path, 'green')
 

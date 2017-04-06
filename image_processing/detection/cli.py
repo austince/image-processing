@@ -97,7 +97,7 @@ def main():
         cprint('Quitting before save!', 'red')
         sys.exit(0)
     except Exception as ex:
-        # raise ex  # For Development
+        raise ex  # For Development
         cprint('Error processing ' + args.input + ": " + str(ex), 'red')
         sys.exit(1)
 
