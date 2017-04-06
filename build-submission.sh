@@ -26,6 +26,6 @@ cd ${DIR}
 # Exclude caches, temp outputs, markdown, and complied python files
 # Output is in results
 zip -r ${FILENAME} \
-	setup.py requirements.txt README.md results *.pdf ${PKG_NAME} \
+	setup.py setup.cfg MANIFEST.in requirements.txt README.md results *.pdf ${PKG_NAME} \
 	-x *__pycache__* *out* *.pyc *.md
 
